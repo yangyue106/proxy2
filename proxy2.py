@@ -147,6 +147,10 @@ class ProxyRequestHandler(BaseHTTPRequestHandler):
 
         try:
             origin = (scheme, netloc)
+            req_headers = dict(
+                    (k.encode('ascii') if isinstance(k, unicode) else k,
+                     v.encode('ascii') if isinstance(v, unicode) else v)
+                    for k, v in req.headers.items())
             if not origin in self.tls.conns:
                 if scheme == 'https':
                     self.tls.conns[origin] = httplib.HTTPSConnection(netloc, timeout=self.timeout)
